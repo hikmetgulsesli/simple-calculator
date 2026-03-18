@@ -3,43 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hesap Makinesi</title>
+    <title>Pro Calc - Professional Dark Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="calculator">
+        <header class="calculator-header">
+            <div class="header-brand">
+                <span class="material-symbols-outlined brand-icon">calculate</span>
+                <h2 class="brand-title">Pro Calc</h2>
+            </div>
+            <button class="btn-settings" data-action="settings" aria-label="Ayarlar">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+        </header>
+        
         <div class="display">
             <div class="display-operation" id="operation"></div>
-            <div class="display-result" id="result">0</div>
+            <h1 class="display-result" id="result">0</h1>
         </div>
+        
         <div class="buttons">
-            <button class="btn btn-operator" data-action="clear">C</button>
-            <button class="btn btn-operator" data-action="backspace">⌫</button>
-            <button class="btn btn-operator" data-action="divide">÷</button>
-            <button class="btn btn-operator" data-action="multiply">×</button>
+            <button class="btn btn-function" data-action="clear" aria-label="Temizle">
+                <span class="material-symbols-outlined">restart_alt</span>
+            </button>
+            <button class="btn btn-function" data-action="backspace" aria-label="Geri Sil">
+                <span class="material-symbols-outlined">backspace</span>
+            </button>
+            <button class="btn btn-operator" data-action="percent" aria-label="Yüzde">
+                <span class="material-symbols-outlined">percent</span>
+            </button>
+            <button class="btn btn-operator" data-action="divide" aria-label="Bölme">
+                <span class="material-symbols-outlined">close</span>
+            </button>
             
             <button class="btn btn-number" data-value="7">7</button>
             <button class="btn btn-number" data-value="8">8</button>
             <button class="btn btn-number" data-value="9">9</button>
-            <button class="btn btn-operator" data-action="subtract">-</button>
+            <button class="btn btn-operator" data-action="multiply" aria-label="Çarpma">
+                <span class="material-symbols-outlined">remove</span>
+            </button>
             
             <button class="btn btn-number" data-value="4">4</button>
             <button class="btn btn-number" data-value="5">5</button>
             <button class="btn btn-number" data-value="6">6</button>
-            <button class="btn btn-operator" data-action="add">+</button>
+            <button class="btn btn-operator" data-action="subtract" aria-label="Çıkarma">
+                <span class="material-symbols-outlined">remove</span>
+            </button>
             
             <button class="btn btn-number" data-value="1">1</button>
             <button class="btn btn-number" data-value="2">2</button>
             <button class="btn btn-number" data-value="3">3</button>
-            <button class="btn btn-equals" data-action="equals">=</button>
+            <button class="btn btn-operator" data-action="add" aria-label="Toplama">
+                <span class="material-symbols-outlined">add</span>
+            </button>
             
-            <button class="btn btn-number btn-double" data-action="toggle-sign">±</button>
-            <button class="btn btn-number btn-double" data-value="0">0</button>
-            <button class="btn btn-number" data-action="decimal">.</button>
+            <button class="btn btn-function" data-action="toggle-sign" aria-label="İşaret Değiştir">±</button>
+            <button class="btn btn-number" data-value="0">0</button>
+            <button class="btn btn-function" data-action="decimal" aria-label="Ondalık">.</button>
+            <button class="btn btn-equals" data-action="equals" aria-label="Hesapla">
+                <span class="material-symbols-outlined">drag_handle</span>
+            </button>
         </div>
+        
+        <footer class="calculator-footer">
+            <span class="memory-status">Hafıza: <span id="memory">0.00</span></span>
+            <div class="connection-status">
+                <div class="status-dot"></div>
+                <span>Bağlı</span>
+            </div>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>

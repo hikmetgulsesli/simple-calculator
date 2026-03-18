@@ -3,12 +3,14 @@
 const display = {
     operation: document.getElementById('operation'),
     result: document.getElementById('result'),
+    memory: document.getElementById('memory'),
 };
 
 let currentInput = '0';
 let previousInput = '';
 let operation = null;
 let shouldResetDisplay = false;
+let memoryValue = 0;
 
 // Buton olaylarını dinle
 document.querySelectorAll('.btn').forEach(button => {
@@ -20,7 +22,7 @@ document.addEventListener('keydown', handleKeyboard);
 
 // Buton tıklama işleyicisi
 function handleButtonClick(event) {
-    const button = event.target;
+    const button = event.currentTarget;
     const value = button.dataset.value;
     const action = button.dataset.action;
 
@@ -51,6 +53,9 @@ function handleAction(action) {
         case 'backspace':
             backspace();
             break;
+        case 'percent':
+            calculatePercent();
+            break;
         case 'add':
             setOperation('+');
             break;
@@ -72,6 +77,10 @@ function handleAction(action) {
         case 'toggle-sign':
             toggleSign();
             break;
+        case 'settings':
+            // Settings placeholder - could toggle theme, etc.
+            console.log('Settings clicked');
+            break;
     }
 }
 
@@ -82,6 +91,7 @@ function clearCalculator() {
     operation = null;
     shouldResetDisplay = false;
     updateDisplay();
+    display.operation.textContent = '';
 }
 
 // Geri silme
@@ -93,6 +103,14 @@ function backspace() {
     } else {
         currentInput = currentInput.slice(0, -1);
     }
+    updateDisplay();
+}
+
+// Yüzde hesaplama
+function calculatePercent() {
+    const value = parseFloat(currentInput);
+    if (isNaN(value)) return;
+    currentInput = (value / 100).toString();
     updateDisplay();
 }
 
@@ -144,9 +162,11 @@ function calculate() {
     }
 
     currentInput = result.toString();
+    memoryValue = result;
     operation = null;
     shouldResetDisplay = true;
     updateDisplay();
+    updateMemoryDisplay();
     display.operation.textContent = '';
 }
 
@@ -180,6 +200,9 @@ function showError(message) {
     previousInput = '';
     operation = null;
     shouldResetDisplay = true;
+    setTimeout(() => {
+        display.result.textContent = '0';
+    }, 2000);
 }
 
 // Ekran güncelleme
@@ -191,6 +214,13 @@ function updateDisplay() {
 function updateOperationDisplay() {
     if (previousInput && operation) {
         display.operation.textContent = `${previousInput} ${operation}`;
+    }
+}
+
+// Hafıza gösterimi güncelleme
+function updateMemoryDisplay() {
+    if (display.memory) {
+        display.memory.textContent = parseFloat(memoryValue).toFixed(2);
     }
 }
 
@@ -209,7 +239,10 @@ function handleKeyboard(event) {
     } else if (key === '*') {
         setOperation('×');
     } else if (key === '/') {
+        event.preventDefault();
         setOperation('÷');
+    } else if (key === '%') {
+        calculatePercent();
     } else if (key === 'Enter' || key === '=') {
         event.preventDefault();
         calculate();
@@ -222,3 +255,4 @@ function handleKeyboard(event) {
 
 // İlk ekran güncelleme
 updateDisplay();
+updateMemoryDisplay();
