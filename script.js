@@ -1,224 +1,141 @@
-// Hesap Makinesi Uygulaması
+import {
+    initialState,
+    inputNumber,
+    inputDecimal,
+    setOperator,
+    calculate,
+    clear,
+    backspace,
+    toggleSign,
+    percentage,
+    getDisplayExpression,
+} from './calculator-engine.js';
+
+/** @type {import('./calculator-engine.js').CalcState} */
+let state = { ...initialState };
 
 const display = {
     operation: document.getElementById('operation'),
     result: document.getElementById('result'),
 };
 
-let currentInput = '0';
-let previousInput = '';
-let operation = null;
-let shouldResetDisplay = false;
+/**
+ * Update the display with current state
+ */
+function updateDisplay() {
+    const displayValue = state.currentInput.replace('.', ',');
+    display.result.textContent = displayValue;
+    display.operation.textContent = getDisplayExpression(state);
+}
 
-// Buton olaylarını dinle
-document.querySelectorAll('.btn').forEach(button => {
-    button.addEventListener('click', handleButtonClick);
-});
-
-// Klavye olaylarını dinle
-document.addEventListener('keydown', handleKeyboard);
-
-// Buton tıklama işleyicisi
+/**
+ * Handle button click events
+ * @param {Event} event
+ */
 function handleButtonClick(event) {
-    const button = event.target;
+    const button = event.target.closest('.btn');
+    if (!button) return;
+
     const value = button.dataset.value;
     const action = button.dataset.action;
 
     if (value !== undefined) {
-        handleNumberInput(value);
+        state = inputNumber(state, value);
     } else if (action) {
         handleAction(action);
     }
-}
 
-// Sayı girişi
-function handleNumberInput(value) {
-    if (shouldResetDisplay) {
-        currentInput = value;
-        shouldResetDisplay = false;
-    } else {
-        currentInput = currentInput === '0' ? value : currentInput + value;
-    }
     updateDisplay();
 }
 
-// İşlem işleyicisi
+/**
+ * Handle action buttons
+ * @param {string} action
+ */
 function handleAction(action) {
     switch (action) {
         case 'clear':
-            clearCalculator();
+            state = clear();
             break;
         case 'backspace':
-            backspace();
+            state = backspace(state);
             break;
         case 'add':
-            setOperation('+');
+            state = setOperator(state, '+');
             break;
         case 'subtract':
-            setOperation('-');
+            state = setOperator(state, '-');
             break;
         case 'multiply':
-            setOperation('×');
+            state = setOperator(state, '×');
             break;
         case 'divide':
-            setOperation('÷');
+            state = setOperator(state, '÷');
             break;
         case 'equals':
-            calculate();
+            state = calculate(state);
             break;
         case 'decimal':
-            addDecimal();
+            state = inputDecimal(state);
             break;
         case 'toggle-sign':
-            toggleSign();
+            state = toggleSign(state);
+            break;
+        case 'percent':
+            state = percentage(state);
             break;
     }
 }
 
-// Temizleme
-function clearCalculator() {
-    currentInput = '0';
-    previousInput = '';
-    operation = null;
-    shouldResetDisplay = false;
-    updateDisplay();
-}
-
-// Geri silme
-function backspace() {
-    if (shouldResetDisplay) return;
-    
-    if (currentInput.length === 1 || (currentInput.length === 2 && currentInput.startsWith('-'))) {
-        currentInput = '0';
-    } else {
-        currentInput = currentInput.slice(0, -1);
-    }
-    updateDisplay();
-}
-
-// İşlem belirleme
-function setOperation(op) {
-    if (operation && !shouldResetDisplay) {
-        calculate();
-    }
-    previousInput = currentInput;
-    operation = op;
-    shouldResetDisplay = true;
-    updateOperationDisplay();
-}
-
-// Hesaplama
-function calculate() {
-    if (operation === null || shouldResetDisplay) return;
-
-    const prev = parseFloat(previousInput);
-    const current = parseFloat(currentInput);
-    let result;
-
-    if (isNaN(prev) || isNaN(current)) return;
-
-    switch (operation) {
-        case '+':
-            result = prev + current;
-            break;
-        case '-':
-            result = prev - current;
-            break;
-        case '×':
-            result = prev * current;
-            break;
-        case '÷':
-            if (current === 0) {
-                showError('Sıfıra bölme hatası');
-                return;
-            }
-            result = prev / current;
-            break;
-        default:
-            return;
-    }
-
-    // Ondalık kontrolü
-    if (!Number.isInteger(result)) {
-        result = parseFloat(result.toFixed(10));
-    }
-
-    currentInput = result.toString();
-    operation = null;
-    shouldResetDisplay = true;
-    updateDisplay();
-    display.operation.textContent = '';
-}
-
-// Ondalık ekleme
-function addDecimal() {
-    if (shouldResetDisplay) {
-        currentInput = '0';
-        shouldResetDisplay = false;
-    }
-    if (!currentInput.includes('.')) {
-        currentInput += '.';
-    }
-    updateDisplay();
-}
-
-// İşaret değiştirme
-function toggleSign() {
-    if (currentInput === '0') return;
-    if (currentInput.startsWith('-')) {
-        currentInput = currentInput.slice(1);
-    } else {
-        currentInput = '-' + currentInput;
-    }
-    updateDisplay();
-}
-
-// Hata gösterimi
-function showError(message) {
-    display.result.textContent = message;
-    currentInput = '0';
-    previousInput = '';
-    operation = null;
-    shouldResetDisplay = true;
-}
-
-// Ekran güncelleme
-function updateDisplay() {
-    display.result.textContent = currentInput;
-}
-
-// İşlem ekranı güncelleme
-function updateOperationDisplay() {
-    if (previousInput && operation) {
-        display.operation.textContent = `${previousInput} ${operation}`;
-    }
-}
-
-// Klavye işleyicisi
+/**
+ * Handle keyboard events
+ * @param {KeyboardEvent} event
+ */
 function handleKeyboard(event) {
     const key = event.key;
 
     if (key >= '0' && key <= '9') {
-        handleNumberInput(key);
+        state = inputNumber(state, key);
     } else if (key === '.') {
-        addDecimal();
+        state = inputDecimal(state);
     } else if (key === '+') {
-        setOperation('+');
+        state = setOperator(state, '+');
     } else if (key === '-') {
-        setOperation('-');
+        state = setOperator(state, '-');
     } else if (key === '*') {
-        setOperation('×');
+        state = setOperator(state, '×');
     } else if (key === '/') {
-        setOperation('÷');
+        event.preventDefault();
+        state = setOperator(state, '÷');
     } else if (key === 'Enter' || key === '=') {
         event.preventDefault();
-        calculate();
+        state = calculate(state);
     } else if (key === 'Escape') {
-        clearCalculator();
+        state = clear();
     } else if (key === 'Backspace') {
-        backspace();
+        state = backspace(state);
+    } else if (key === '%') {
+        state = percentage(state);
     }
+
+    updateDisplay();
 }
 
-// İlk ekran güncelleme
+// Event delegation for button clicks
+document.querySelector('.buttons')?.addEventListener('click', handleButtonClick);
+
+// Keyboard support
+document.addEventListener('keydown', handleKeyboard);
+
+// Initial display
 updateDisplay();
+
+// Expose for testing
+window.calculator = {
+    getState: () => state,
+    setState: (/** @type {import('./calculator-engine.js').CalcState} */ newState) => { state = newState; },
+    inputNumber: (/** @type {string} */ num) => { state = inputNumber(state, num); updateDisplay(); },
+    setOperator: (/** @type {string} */ op) => { state = setOperator(state, op); updateDisplay(); },
+    calculate: () => { state = calculate(state); updateDisplay(); },
+    clear: () => { state = clear(); updateDisplay(); },
+};
