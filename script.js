@@ -11,6 +11,7 @@ let previousInput = '';
 let operation = null;
 let shouldResetDisplay = false;
 let memoryValue = 0;
+let errorTimeout = null;
 
 // Buton olaylarını dinle
 document.querySelectorAll('.btn').forEach(button => {
@@ -22,6 +23,12 @@ document.addEventListener('keydown', handleKeyboard);
 
 // Buton tıklama işleyicisi
 function handleButtonClick(event) {
+    // Clear any pending error timeout to prevent race condition
+    if (errorTimeout) {
+        clearTimeout(errorTimeout);
+        errorTimeout = null;
+    }
+    
     const button = event.currentTarget;
     const value = button.dataset.value;
     const action = button.dataset.action;
@@ -78,8 +85,7 @@ function handleAction(action) {
             toggleSign();
             break;
         case 'settings':
-            // Settings placeholder - could toggle theme, etc.
-            console.log('Settings clicked');
+            // Settings placeholder - feature not yet implemented
             break;
     }
 }
@@ -90,7 +96,9 @@ function clearCalculator() {
     previousInput = '';
     operation = null;
     shouldResetDisplay = false;
+    memoryValue = 0;
     updateDisplay();
+    updateMemoryDisplay();
     display.operation.textContent = '';
 }
 
@@ -200,8 +208,9 @@ function showError(message) {
     previousInput = '';
     operation = null;
     shouldResetDisplay = true;
-    setTimeout(() => {
+    errorTimeout = setTimeout(() => {
         display.result.textContent = '0';
+        errorTimeout = null;
     }, 2000);
 }
 
@@ -226,6 +235,12 @@ function updateMemoryDisplay() {
 
 // Klavye işleyicisi
 function handleKeyboard(event) {
+    // Clear any pending error timeout to prevent race condition
+    if (errorTimeout) {
+        clearTimeout(errorTimeout);
+        errorTimeout = null;
+    }
+    
     const key = event.key;
 
     if (key >= '0' && key <= '9') {

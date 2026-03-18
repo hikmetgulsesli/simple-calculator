@@ -1,18 +1,7 @@
 /* Design Tokens - Auto-generated from Stitch */
 @import url('design-tokens.css');
 
-:root {
-    --color-primary: #e9445f;
-    --color-background-light: #f8f6f6;
-    --color-background-dark: #1a1a2e;
-    --color-calc-base: #16213e;
-    --color-calc-display: #0f3460;
-    --color-op-purple: #533483;
-    --color-eq-cyan: #00d9ff;
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-}
-
+/* Additional component styles */
 * {
     margin: 0;
     padding: 0;
@@ -165,6 +154,11 @@ body {
 
 .btn-operator .material-symbols-outlined {
     font-size: 24px;
+}
+
+.divide-icon {
+    font-size: 28px;
+    font-weight: 700;
 }
 
 .btn-function {
