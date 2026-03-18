@@ -1,8 +1,9 @@
-// Hesap Makinesi Uygulaması
+// Hesap Makinesi Uygulaması - Integration
 
 const display = {
     operation: document.getElementById('operation'),
     result: document.getElementById('result'),
+    memory: document.getElementById('memory-status'),
 };
 
 let currentInput = '0';
@@ -20,15 +21,26 @@ document.addEventListener('keydown', handleKeyboard);
 
 // Buton tıklama işleyicisi
 function handleButtonClick(event) {
-    const button = event.target;
+    const button = event.currentTarget;
     const value = button.dataset.value;
     const action = button.dataset.action;
+
+    // Tıklama animasyonu
+    animateButton(button);
 
     if (value !== undefined) {
         handleNumberInput(value);
     } else if (action) {
         handleAction(action);
     }
+}
+
+// Buton animasyonu
+function animateButton(button) {
+    button.classList.add('key-active');
+    setTimeout(() => {
+        button.classList.remove('key-active');
+    }, 100);
 }
 
 // Sayı girişi
@@ -72,6 +84,12 @@ function handleAction(action) {
         case 'toggle-sign':
             toggleSign();
             break;
+        case 'percent':
+            percent();
+            break;
+        case 'settings':
+            // Settings placeholder - no action for now
+            break;
     }
 }
 
@@ -81,13 +99,14 @@ function clearCalculator() {
     previousInput = '';
     operation = null;
     shouldResetDisplay = false;
+    display.operation.textContent = '';
     updateDisplay();
 }
 
 // Geri silme
 function backspace() {
     if (shouldResetDisplay) return;
-    
+
     if (currentInput.length === 1 || (currentInput.length === 2 && currentInput.startsWith('-'))) {
         currentInput = '0';
     } else {
@@ -173,6 +192,14 @@ function toggleSign() {
     updateDisplay();
 }
 
+// Yüzde
+function percent() {
+    const value = parseFloat(currentInput);
+    if (isNaN(value)) return;
+    currentInput = (value / 100).toString();
+    updateDisplay();
+}
+
 // Hata gösterimi
 function showError(message) {
     display.result.textContent = message;
@@ -184,40 +211,81 @@ function showError(message) {
 
 // Ekran güncelleme
 function updateDisplay() {
-    display.result.textContent = currentInput;
+    display.result.textContent = formatNumber(currentInput);
 }
 
 // İşlem ekranı güncelleme
 function updateOperationDisplay() {
     if (previousInput && operation) {
-        display.operation.textContent = `${previousInput} ${operation}`;
+        display.operation.textContent = `${formatNumber(previousInput)} ${operation}`;
     }
+}
+
+// Sayı formatlama (binlik ayraç)
+function formatNumber(numStr) {
+    if (numStr === 'Sıfıra bölme hatası') return numStr;
+
+    const isNegative = numStr.startsWith('-');
+    const absolute = isNegative ? numStr.slice(1) : numStr;
+
+    const parts = absolute.split('.');
+    const integerPart = parts[0];
+    const decimalPart = parts[1] || '';
+
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    return (isNegative ? '-' : '') + formattedInteger + (decimalPart ? '.' + decimalPart : '');
 }
 
 // Klavye işleyicisi
 function handleKeyboard(event) {
     const key = event.key;
 
+    // Klavye buton vurgulama
     if (key >= '0' && key <= '9') {
+        highlightButtonByValue(key);
         handleNumberInput(key);
     } else if (key === '.') {
+        highlightButtonByAction('decimal');
         addDecimal();
     } else if (key === '+') {
+        highlightButtonByAction('add');
         setOperation('+');
     } else if (key === '-') {
+        highlightButtonByAction('subtract');
         setOperation('-');
     } else if (key === '*') {
+        highlightButtonByAction('multiply');
         setOperation('×');
     } else if (key === '/') {
+        highlightButtonByAction('divide');
         setOperation('÷');
     } else if (key === 'Enter' || key === '=') {
         event.preventDefault();
+        highlightButtonByAction('equals');
         calculate();
     } else if (key === 'Escape') {
+        highlightButtonByAction('clear');
         clearCalculator();
     } else if (key === 'Backspace') {
+        highlightButtonByAction('backspace');
         backspace();
+    } else if (key === '%') {
+        highlightButtonByAction('percent');
+        percent();
     }
+}
+
+// Buton vurgulama - değer ile
+function highlightButtonByValue(value) {
+    const button = document.querySelector(`button[data-value="${value}"]`);
+    if (button) animateButton(button);
+}
+
+// Buton vurgulama - aksiyon ile
+function highlightButtonByAction(action) {
+    const button = document.querySelector(`button[data-action="${action}"]`);
+    if (button) animateButton(button);
 }
 
 // İlk ekran güncelleme

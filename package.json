@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --test test-*.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/hikmetgulsesli/simple-calculator#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.0.3"
+    "eslint": "^10.0.3",
+    "globals": "^15.0.0"
   }
 }
