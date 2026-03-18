@@ -3,12 +3,14 @@
 const display = {
     operation: document.getElementById('operation'),
     result: document.getElementById('result'),
+    memory: document.getElementById('memory-display'),
 };
 
 let currentInput = '0';
 let previousInput = '';
 let operation = null;
 let shouldResetDisplay = false;
+let memoryValue = 0;
 
 // Buton olaylarını dinle
 document.querySelectorAll('.btn').forEach(button => {
@@ -20,7 +22,7 @@ document.addEventListener('keydown', handleKeyboard);
 
 // Buton tıklama işleyicisi
 function handleButtonClick(event) {
-    const button = event.target;
+    const button = event.currentTarget;
     const value = button.dataset.value;
     const action = button.dataset.action;
 
@@ -50,6 +52,9 @@ function handleAction(action) {
             break;
         case 'backspace':
             backspace();
+            break;
+        case 'percent':
+            calculatePercent();
             break;
         case 'add':
             setOperation('+');
@@ -82,6 +87,7 @@ function clearCalculator() {
     operation = null;
     shouldResetDisplay = false;
     updateDisplay();
+    updateOperationDisplay();
 }
 
 // Geri silme
@@ -93,6 +99,15 @@ function backspace() {
     } else {
         currentInput = currentInput.slice(0, -1);
     }
+    updateDisplay();
+}
+
+// Yüzde hesaplama
+function calculatePercent() {
+    const current = parseFloat(currentInput);
+    if (isNaN(current)) return;
+    
+    currentInput = (current / 100).toString();
     updateDisplay();
 }
 
@@ -144,10 +159,12 @@ function calculate() {
     }
 
     currentInput = result.toString();
+    memoryValue = result;
     operation = null;
     shouldResetDisplay = true;
     updateDisplay();
-    display.operation.textContent = '';
+    updateOperationDisplay();
+    updateMemoryDisplay();
 }
 
 // Ondalık ekleme
@@ -184,14 +201,32 @@ function showError(message) {
 
 // Ekran güncelleme
 function updateDisplay() {
-    display.result.textContent = currentInput;
+    display.result.textContent = formatNumber(currentInput);
 }
 
 // İşlem ekranı güncelleme
 function updateOperationDisplay() {
     if (previousInput && operation) {
-        display.operation.textContent = `${previousInput} ${operation}`;
+        display.operation.textContent = `${formatNumber(previousInput)} ${operation}`;
+    } else {
+        display.operation.textContent = '';
     }
+}
+
+// Bellek göstergesi güncelleme
+function updateMemoryDisplay() {
+    if (display.memory) {
+        display.memory.textContent = `Memory: ${formatNumber(memoryValue.toFixed(2))}`;
+    }
+}
+
+// Sayı formatlama (binlik ayraç)
+function formatNumber(num) {
+    if (typeof num === 'string' && num.includes('hata')) return num;
+    
+    const parts = num.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
 }
 
 // Klavye işleyicisi
@@ -210,6 +245,8 @@ function handleKeyboard(event) {
         setOperation('×');
     } else if (key === '/') {
         setOperation('÷');
+    } else if (key === '%') {
+        calculatePercent();
     } else if (key === 'Enter' || key === '=') {
         event.preventDefault();
         calculate();
@@ -222,3 +259,27 @@ function handleKeyboard(event) {
 
 // İlk ekran güncelleme
 updateDisplay();
+updateMemoryDisplay();
+
+// Test için expose
+window.calculator = {
+    getState: () => ({
+        currentInput,
+        previousInput,
+        operation,
+        memoryValue,
+        shouldResetDisplay
+    }),
+    setInput: (val) => {
+        currentInput = val;
+        updateDisplay();
+    },
+    press: (key) => {
+        const btn = document.querySelector(`[data-value="${key}"]`);
+        if (btn) btn.click();
+    },
+    pressAction: (action) => {
+        const btn = document.querySelector(`[data-action="${action}"]`);
+        if (btn) btn.click();
+    }
+};
