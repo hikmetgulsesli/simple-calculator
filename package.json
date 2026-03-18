@@ -19,6 +19,7 @@
   "homepage": "https://github.com/hikmetgulsesli/simple-calculator#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.0.3"
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0"
   }
 }
