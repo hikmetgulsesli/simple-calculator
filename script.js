@@ -1,14 +1,27 @@
 // Hesap Makinesi Uygulaması
+// Display logic module integration
+
+/* global window */
+
+import {
+    formatDisplayValue,
+    formatOperationDisplay,
+    formatNumberWithCommas,
+    handleBackspace,
+    toggleSign as toggleSignLogic,
+    appendDigit,
+    appendDecimal,
+    calculateFontSize,
+    createDisplayState,
+    clearDisplayState,
+} from './display-logic.js';
 
 const display = {
     operation: document.getElementById('operation'),
     result: document.getElementById('result'),
 };
 
-let currentInput = '0';
-let previousInput = '';
-let operation = null;
-let shouldResetDisplay = false;
+let state = createDisplayState();
 
 // Buton olaylarını dinle
 document.querySelectorAll('.btn').forEach(button => {
@@ -20,7 +33,9 @@ document.addEventListener('keydown', handleKeyboard);
 
 // Buton tıklama işleyicisi
 function handleButtonClick(event) {
-    const button = event.target;
+    const button = event.target.closest('.btn');
+    if (!button) return;
+    
     const value = button.dataset.value;
     const action = button.dataset.action;
 
@@ -33,12 +48,12 @@ function handleButtonClick(event) {
 
 // Sayı girişi
 function handleNumberInput(value) {
-    if (shouldResetDisplay) {
-        currentInput = value;
-        shouldResetDisplay = false;
-    } else {
-        currentInput = currentInput === '0' ? value : currentInput + value;
-    }
+    state.currentInput = appendDigit(
+        state.currentInput,
+        value,
+        state.shouldResetDisplay
+    );
+    state.shouldResetDisplay = false;
     updateDisplay();
 }
 
@@ -75,49 +90,42 @@ function handleAction(action) {
     }
 }
 
-// Temizleme
+// Temizleme - resets both current operand and operation
 function clearCalculator() {
-    currentInput = '0';
-    previousInput = '';
-    operation = null;
-    shouldResetDisplay = false;
+    state = clearDisplayState();
     updateDisplay();
 }
 
-// Geri silme
+// Geri silme - removes last character
 function backspace() {
-    if (shouldResetDisplay) return;
+    if (state.shouldResetDisplay) return;
     
-    if (currentInput.length === 1 || (currentInput.length === 2 && currentInput.startsWith('-'))) {
-        currentInput = '0';
-    } else {
-        currentInput = currentInput.slice(0, -1);
-    }
+    state.currentInput = handleBackspace(state.currentInput);
     updateDisplay();
 }
 
 // İşlem belirleme
 function setOperation(op) {
-    if (operation && !shouldResetDisplay) {
+    if (state.operation && !state.shouldResetDisplay) {
         calculate();
     }
-    previousInput = currentInput;
-    operation = op;
-    shouldResetDisplay = true;
+    state.previousInput = state.currentInput;
+    state.operation = op;
+    state.shouldResetDisplay = true;
     updateOperationDisplay();
 }
 
 // Hesaplama
 function calculate() {
-    if (operation === null || shouldResetDisplay) return;
+    if (state.operation === null || state.shouldResetDisplay) return;
 
-    const prev = parseFloat(previousInput);
-    const current = parseFloat(currentInput);
+    const prev = parseFloat(state.previousInput);
+    const current = parseFloat(state.currentInput);
     let result;
 
     if (isNaN(prev) || isNaN(current)) return;
 
-    switch (operation) {
+    switch (state.operation) {
         case '+':
             result = prev + current;
             break;
@@ -143,55 +151,54 @@ function calculate() {
         result = parseFloat(result.toFixed(10));
     }
 
-    currentInput = result.toString();
-    operation = null;
-    shouldResetDisplay = true;
+    state.currentInput = result.toString();
+    state.operation = null;
+    state.shouldResetDisplay = true;
     updateDisplay();
     display.operation.textContent = '';
 }
 
-// Ondalık ekleme
+// Ondalık ekleme - only one per number
 function addDecimal() {
-    if (shouldResetDisplay) {
-        currentInput = '0';
-        shouldResetDisplay = false;
+    if (state.shouldResetDisplay) {
+        state.currentInput = '0';
+        state.shouldResetDisplay = false;
     }
-    if (!currentInput.includes('.')) {
-        currentInput += '.';
-    }
+    state.currentInput = appendDecimal(state.currentInput);
     updateDisplay();
 }
 
 // İşaret değiştirme
 function toggleSign() {
-    if (currentInput === '0') return;
-    if (currentInput.startsWith('-')) {
-        currentInput = currentInput.slice(1);
-    } else {
-        currentInput = '-' + currentInput;
-    }
+    state.currentInput = toggleSignLogic(state.currentInput);
     updateDisplay();
 }
 
 // Hata gösterimi
 function showError(message) {
     display.result.textContent = message;
-    currentInput = '0';
-    previousInput = '';
-    operation = null;
-    shouldResetDisplay = true;
+    state.currentInput = '0';
+    state.previousInput = '';
+    state.operation = null;
+    state.shouldResetDisplay = true;
 }
 
-// Ekran güncelleme
+// Ekran güncelleme - JetBrains Mono 48px with overflow handling
 function updateDisplay() {
-    display.result.textContent = currentInput;
+    const formattedValue = formatDisplayValue(state.currentInput);
+    display.result.textContent = formatNumberWithCommas(formattedValue);
+    
+    // Dynamic font size for overflow handling
+    const fontSize = calculateFontSize(formattedValue, 48, 24);
+    display.result.style.fontSize = `${fontSize}px`;
 }
 
-// İşlem ekranı güncelleme
+// İşlem ekranı güncelleme - 24px font
 function updateOperationDisplay() {
-    if (previousInput && operation) {
-        display.operation.textContent = `${previousInput} ${operation}`;
-    }
+    display.operation.textContent = formatOperationDisplay(
+        state.previousInput,
+        state.operation
+    );
 }
 
 // Klavye işleyicisi
@@ -222,3 +229,13 @@ function handleKeyboard(event) {
 
 // İlk ekran güncelleme
 updateDisplay();
+
+// Expose functions for testing
+if (typeof window !== 'undefined') {
+    window.calculatorDisplay = {
+        getState: () => ({ ...state }),
+        setState: (newState) => { state = { ...newState }; },
+        updateDisplay,
+        updateOperationDisplay,
+    };
+}
