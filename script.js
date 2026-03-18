@@ -82,6 +82,7 @@ function clearCalculator() {
     operation = null;
     shouldResetDisplay = false;
     updateDisplay();
+    display.operation.textContent = '';
 }
 
 // Geri silme
@@ -200,24 +201,57 @@ function handleKeyboard(event) {
 
     if (key >= '0' && key <= '9') {
         handleNumberInput(key);
+        highlightButtonByValue(key);
     } else if (key === '.') {
         addDecimal();
+        highlightButtonByAction('decimal');
     } else if (key === '+') {
         setOperation('+');
+        highlightButtonByAction('add');
     } else if (key === '-') {
         setOperation('-');
+        highlightButtonByAction('subtract');
     } else if (key === '*') {
         setOperation('×');
+        highlightButtonByAction('multiply');
     } else if (key === '/') {
         setOperation('÷');
+        highlightButtonByAction('divide');
     } else if (key === 'Enter' || key === '=') {
         event.preventDefault();
         calculate();
+        highlightButtonByAction('equals');
     } else if (key === 'Escape') {
         clearCalculator();
+        highlightButtonByAction('clear');
     } else if (key === 'Backspace') {
         backspace();
+        highlightButtonByAction('backspace');
     }
+}
+
+// Buton görsel geri bildirimi - data-value ile
+function highlightButtonByValue(value) {
+    const button = document.querySelector(`.btn[data-value="${value}"]`);
+    if (button) {
+        highlightButton(button);
+    }
+}
+
+// Buton görsel geri bildirimi - data-action ile
+function highlightButtonByAction(action) {
+    const button = document.querySelector(`.btn[data-action="${action}"]`);
+    if (button) {
+        highlightButton(button);
+    }
+}
+
+// Butona geçici highlight sınıfı ekle
+function highlightButton(button) {
+    button.classList.add('key-active');
+    setTimeout(() => {
+        button.classList.remove('key-active');
+    }, 100);
 }
 
 // İlk ekran güncelleme
