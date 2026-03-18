@@ -1,0 +1,307 @@
+[
+  {
+    "screenId": "9e4c25796d564c2cb50311d250495f7d",
+    "screenTitle": "Professional Dark Calculator",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "restart_alt",
+        "line": 63
+      },
+      {
+        "type": "button",
+        "label": "backspace",
+        "line": 66
+      },
+      {
+        "type": "button",
+        "label": "percent",
+        "line": 69
+      },
+      {
+        "type": "button",
+        "label": "close",
+        "line": 72
+      },
+      {
+        "type": "button",
+        "label": "7",
+        "line": 76
+      },
+      {
+        "type": "button",
+        "label": "8",
+        "line": 77
+      },
+      {
+        "type": "button",
+        "label": "9",
+        "line": 78
+      },
+      {
+        "type": "button",
+        "label": "remove",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "4",
+        "line": 83
+      },
+      {
+        "type": "button",
+        "label": "5",
+        "line": 84
+      },
+      {
+        "type": "button",
+        "label": "6",
+        "line": 85
+      },
+      {
+        "type": "button",
+        "label": "add",
+        "line": 86
+      },
+      {
+        "type": "button",
+        "label": "1",
+        "line": 90
+      },
+      {
+        "type": "button",
+        "label": "2",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "3",
+        "line": 92
+      },
+      {
+        "type": "button",
+        "label": "drag_handle",
+        "line": 94
+      },
+      {
+        "type": "button",
+        "label": "±",
+        "line": 98
+      },
+      {
+        "type": "button",
+        "label": "0",
+        "line": 101
+      },
+      {
+        "type": "button",
+        "label": ".",
+        "line": 102
+      },
+      {
+        "type": "button",
+        "label": "[icon: calculate]",
+        "line": 46
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 50
+      },
+      {
+        "type": "button",
+        "label": "[icon: restart_alt]",
+        "line": 64
+      },
+      {
+        "type": "button",
+        "label": "[icon: backspace]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: percent]",
+        "line": 70
+      },
+      {
+        "type": "button",
+        "label": "[icon: close]",
+        "line": 73
+      },
+      {
+        "type": "button",
+        "label": "[icon: remove]",
+        "line": 80
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 87
+      },
+      {
+        "type": "button",
+        "label": "[icon: drag_handle]",
+        "line": 95
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "restart_alt",
+        "line": 63
+      },
+      {
+        "type": "button",
+        "label": "backspace",
+        "line": 66
+      },
+      {
+        "type": "button",
+        "label": "percent",
+        "line": 69
+      },
+      {
+        "type": "button",
+        "label": "close",
+        "line": 72
+      },
+      {
+        "type": "button",
+        "label": "7",
+        "line": 76
+      },
+      {
+        "type": "button",
+        "label": "8",
+        "line": 77
+      },
+      {
+        "type": "button",
+        "label": "9",
+        "line": 78
+      },
+      {
+        "type": "button",
+        "label": "remove",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "4",
+        "line": 83
+      },
+      {
+        "type": "button",
+        "label": "5",
+        "line": 84
+      },
+      {
+        "type": "button",
+        "label": "6",
+        "line": 85
+      },
+      {
+        "type": "button",
+        "label": "add",
+        "line": 86
+      },
+      {
+        "type": "button",
+        "label": "1",
+        "line": 90
+      },
+      {
+        "type": "button",
+        "label": "2",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "3",
+        "line": 92
+      },
+      {
+        "type": "button",
+        "label": "drag_handle",
+        "line": 94
+      },
+      {
+        "type": "button",
+        "label": "±",
+        "line": 98
+      },
+      {
+        "type": "button",
+        "label": "0",
+        "line": 101
+      },
+      {
+        "type": "button",
+        "label": ".",
+        "line": 102
+      },
+      {
+        "type": "button",
+        "label": "[icon: calculate]",
+        "line": 46
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 50
+      },
+      {
+        "type": "button",
+        "label": "[icon: restart_alt]",
+        "line": 64
+      },
+      {
+        "type": "button",
+        "label": "[icon: backspace]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: percent]",
+        "line": 70
+      },
+      {
+        "type": "button",
+        "label": "[icon: close]",
+        "line": 73
+      },
+      {
+        "type": "button",
+        "label": "[icon: remove]",
+        "line": 80
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 87
+      },
+      {
+        "type": "button",
+        "label": "[icon: drag_handle]",
+        "line": 95
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 29,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  }
+]

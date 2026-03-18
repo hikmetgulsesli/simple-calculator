@@ -1,0 +1,139 @@
+:root {
+    --bg-primary: #1a1a2e;
+    --bg-calculator: #16213e;
+    --bg-display: #0f3460;
+    --btn-number: #e94560;
+    --btn-operator: #533483;
+    --btn-equals: #00d9ff;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.calculator {
+    background-color: var(--bg-calculator);
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.display {
+    background-color: var(--bg-display);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: right;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.display-operation {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--text-secondary);
+    min-height: 30px;
+    word-break: break-all;
+}
+
+.display-result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 48px;
+    color: var(--text-primary);
+    font-weight: 700;
+    word-break: break-all;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    background-color: var(--btn-number);
+    color: var(--text-primary);
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn:hover {
+    filter: brightness(1.1);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn:focus {
+    outline: 2px solid var(--btn-equals);
+    outline-offset: 2px;
+}
+
+.btn-operator {
+    background-color: var(--btn-operator);
+}
+
+.btn-equals {
+    background-color: var(--btn-equals);
+    color: var(--bg-primary);
+    grid-row: span 2;
+    aspect-ratio: auto;
+}
+
+.btn-double {
+    grid-column: span 1;
+}
+
+@media (max-width: 480px) {
+    .calculator {
+        max-width: 90%;
+    }
+    
+    .display-result {
+        font-size: 36px;
+    }
+    
+    .display-operation {
+        font-size: 18px;
+    }
+    
+    .btn {
+        padding: 15px;
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 480px) and (max-width: 768px) {
+    .calculator {
+        max-width: 350px;
+    }
+}
